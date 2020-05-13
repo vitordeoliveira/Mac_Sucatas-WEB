@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import styled from "styled-components";
 // import useLogin from "../../Authentication/useLogin";
-import LoginButtom from "../atoms/LoginButton";
+import Button from "../atoms/Button";
 import LoginInput from "../atoms/LoginInput";
 import { useMutation } from "@apollo/react-hooks";
 import { useHistory } from "react-router-dom";
@@ -23,6 +23,7 @@ const LOGIN = gql`
 function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [login] = useMutation(LOGIN);
   const history = useHistory();
   const { setAuth } = useContext(Auth);
@@ -32,24 +33,28 @@ function LoginForm() {
       const { data } = await login({
         variables: { username, password },
       });
-      if (data) {
+      if (data.login.token) {
         setAuth({
           token: data.login.token,
           isAuthenticated: true,
           loading: false,
           user: data.login.user,
         });
+        localStorage.setItem("token", data.login.token);
+        history.push("/dashboard");
+      } else {
+        setError("Usuario ou senha incorretos");
       }
-      localStorage.setItem("token", data.login.token);
-      history.push("/dashboard");
     } catch (error) {
       console.log(error);
+      setError("Erro no servidor");
     }
   };
 
   return (
     <>
       <Form>
+        {error ? <Error>{error}</Error> : null}
         <LoginInput
           placeholder="Username"
           value={username}
@@ -65,7 +70,7 @@ function LoginForm() {
             setPassword(e.target.value);
           }}
         ></LoginInput>
-        <LoginButtom onClick={onclick}></LoginButtom>
+        <Button onClick={onclick}>Login</Button>
       </Form>
     </>
   );

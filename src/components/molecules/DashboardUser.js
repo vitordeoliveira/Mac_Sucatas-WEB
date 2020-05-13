@@ -7,7 +7,7 @@ function DashboardUser() {
 
   return (
     <>
-      <ID>ID:{auth.user.id}</ID>
+      <ID>ID: {auth.user.id}</ID>
       <Name>{auth.user.name}</Name>
     </>
   );
@@ -16,6 +16,7 @@ function DashboardUser() {
 const Paragraph = styled.p`
   font-size: 15px;
   height: auto;
+  color: white;
 `;
 
 const ID = styled(Paragraph)`
@@ -28,6 +29,7 @@ const ID = styled(Paragraph)`
 const Name = styled(Paragraph)`
   font-weight: bold;
   text-align: center;
+  font-size: 18px;
 `;
 
 export default DashboardUser;

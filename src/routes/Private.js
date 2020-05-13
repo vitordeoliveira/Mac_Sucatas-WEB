@@ -5,6 +5,17 @@ import Dashboard from "../pages/Dashboard";
 
 export default function Private() {
   return (
-    <PrivateRoute path="/dashboard" exact component={Dashboard}></PrivateRoute>
+    <>
+      <PrivateRoute
+        path="/dashboard"
+        exact
+        component={Dashboard}
+      ></PrivateRoute>
+      <PrivateRoute
+        path="/dashboard/:id"
+        exact
+        component={Dashboard}
+      ></PrivateRoute>
+    </>
   );
 }

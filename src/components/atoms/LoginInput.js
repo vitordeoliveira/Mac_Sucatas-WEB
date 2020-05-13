@@ -28,6 +28,7 @@ const Icon = styled.div`
   position: absolute;
   width: auto;
   left: 20px;
+  align-items: center;
 `;
 
 const Input = styled.input`

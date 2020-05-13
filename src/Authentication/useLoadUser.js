@@ -18,7 +18,7 @@ export default function useLoadUser() {
   const { setAuth } = useContext(Context);
 
   useEffect(() => {
-    if (!loading && data.auth) {
+    if (!loading && data && data.auth) {
       setAuth((old) => ({
         ...old,
         isAuthenticated: true,

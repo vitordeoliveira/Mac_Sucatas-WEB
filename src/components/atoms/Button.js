@@ -1,25 +1,25 @@
 import React from "react";
 import styled from "styled-components";
 
-function LoginButton({ ...props }) {
+function Button({ children, ...props }) {
   return (
-    <Button {...props}>
-      <Text>Login</Text>
-    </Button>
+    <Wrapper {...props}>
+      <Text>{children}</Text>
+    </Wrapper>
   );
 }
 
-const Button = styled.div`
+const Wrapper = styled.div`
   display: flex;
   height: 40px;
   width: 50%;
   border-radius: 50px;
   border: 0;
-  background: #2c6126;
+  background: rgb(30, 100, 30);
   cursor: pointer;
   align-items: center;
-  text-align: center;
-  transition: all 0.7s;
+  transition: all 0.3s;
+  justify-content: center;
 
   :focus {
     outline-width: 0;
@@ -27,7 +27,7 @@ const Button = styled.div`
   }
 
   :hover {
-    box-shadow: 3px 3px 5px;
+    box-shadow: 1px 1px 5px;
   }
 `;
 
@@ -38,4 +38,4 @@ const Text = styled.h1`
   font-size: 25px;
 `;
 
-export default LoginButton;
+export default Button;

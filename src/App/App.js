@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import { BrowserRouter, Switch } from "react-router-dom";
 import Routes from "../routes/routes";
 import Authentication from "../Authentication";

@@ -6,6 +6,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   background: rgba(45, 60, 15, 0.8);
+  height: 100vh;
 `;
 
 const Container = styled.div`
@@ -25,6 +26,7 @@ const Title = styled.div`
   height: 50%;
   text-align: center;
   align-items: center;
+  justify-content: center;
 `;
 
 const Form = styled.div`
