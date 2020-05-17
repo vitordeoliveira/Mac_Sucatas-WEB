@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom";
 import DashboardTemplate from "../templates/DashboardTemplate";
 
 import User from "../components/molecules/DashboardUser";
-import Navs from "../components/organisms/DashboardNavs";
 
-import Main from "../components/organisms/DashboardMain";
-import Product from "../components/organisms/DashboardProduct";
+import Navs from "../components/organisms/Dashboard/Navs";
+import Main from "../components/organisms/Dashboard/Main";
+import Product from "../components/organisms/Dashboard/Product";
 
 function Dashboard() {
   const { id } = useParams();

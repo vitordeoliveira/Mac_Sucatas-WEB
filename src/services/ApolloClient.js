@@ -5,7 +5,10 @@ import {
   HttpLink,
 } from "apollo-boost";
 
-const httpLink = new HttpLink({ uri: "https://macsucatas.gexus.com.br/" });
+const httpLink = new HttpLink({
+  // uri: "https://macsucatas.gexus.com.br/graphql",
+  uri: "http://localhost:5000/graphql",
+});
 
 const authLink = new ApolloLink((operation, forward) => {
   const token = localStorage.getItem("token");

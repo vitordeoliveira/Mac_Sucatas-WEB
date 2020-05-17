@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Item from "../atoms/DashboardItem";
+import Item from "../../atoms/DashboardItem";
 import { AiFillDashboard, AiOutlineLogout } from "react-icons/ai";
 import {
   FaCartPlus,

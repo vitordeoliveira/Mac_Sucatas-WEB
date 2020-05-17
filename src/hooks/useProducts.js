@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
@@ -11,7 +12,7 @@ const ADDPRODUCT = gql`
   }
 `;
 
-const GETPRODUCT = gql`
+const GETPRODUCTS = gql`
   {
     getProduct {
       id
@@ -22,18 +23,81 @@ const GETPRODUCT = gql`
   }
 `;
 
+const UPDATEPRODUCT = gql`
+  mutation updateProduct(
+    $id: ID!
+    $name: String
+    $stock: Int
+    $balanceStock: Float
+  ) {
+    updateProduct(
+      id: $id
+      name: $name
+      stock: $stock
+      balanceStock: $balanceStock
+    )
+  }
+`;
+
 const DELETEPRODUCT = gql`
   mutation deleteProduct($id: ID!) {
-    deleteProduct(id: $id)
+    deleteProduct(id: $id) {
+      success
+      error
+    }
   }
 `;
 
 function useProducts() {
-  const [addProduct] = useMutation(ADDPRODUCT);
-  const [deleteProduct] = useMutation(DELETEPRODUCT);
-  const { loading, data, refetch } = useQuery(GETPRODUCT);
+  const [updateMode, setUpdateMode] = useState(false);
+  const [add] = useMutation(ADDPRODUCT);
+  const [update] = useMutation(UPDATEPRODUCT);
+  const [remove] = useMutation(DELETEPRODUCT);
+  const { loading, data, refetch } = useQuery(GETPRODUCTS);
 
-  return [{ loading, data }, refetch, addProduct, deleteProduct];
+  const onAdd = async (name, stock, balanceStock) => {
+    try {
+      await add({
+        variables: {
+          name,
+          stock: Number(stock),
+          balanceStock: Number(balanceStock.replace(",", ".")),
+        },
+      });
+      refetch();
+    } catch ({ graphQLErrors }) {
+      alert(graphQLErrors[0].message);
+    }
+  };
+
+  const onRemove = async (id) => {
+    try {
+      const { data } = await remove({
+        variables: { id },
+      });
+      const { success, error } = data.deleteProduct;
+
+      if (!success) {
+        alert(error);
+      }
+      refetch();
+    } catch ({ graphQLErrors }) {
+      alert(graphQLErrors[0].message);
+    }
+  };
+
+  function onUpdate(id) {
+    setUpdateMode(true);
+    console.log(id);
+  }
+
+  return [
+    { loading, data },
+    refetch,
+    onAdd,
+    { updateMode, onUpdate },
+    onRemove,
+  ];
 }
 
 export default useProducts;

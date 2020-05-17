@@ -4,19 +4,13 @@ import styled from "styled-components";
 
 import Button from "../atoms/Button";
 
-function ProductsForm({ Add, refresh }) {
+function Form({ add }) {
   const [name, setName] = useState("");
   const [stock, setStock] = useState("");
   const [balanceStock, setBalanceStock] = useState("");
-  const onclick = async () => {
-    await Add({
-      variables: {
-        name,
-        stock: Number(stock),
-        balanceStock: Number(balanceStock.replace(",", ".")),
-      },
-    });
-    refresh();
+
+  const onclick = () => {
+    add(name, stock, balanceStock);
     setName("");
     setStock("");
     setBalanceStock("");
@@ -37,7 +31,7 @@ function ProductsForm({ Add, refresh }) {
       <Input
         onChange={(e) => setBalanceStock(e.target.value)}
         value={balanceStock}
-        placeholder="Balanço"
+        placeholder="Balanรงo"
       ></Input>
       <Button onClick={onclick}>Enviar</Button>
     </Wrapper>
@@ -73,4 +67,4 @@ const Input = styled.input`
   }
 `;
 
-export default ProductsForm;
+export default Form;

@@ -1,18 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-function ProductsList({ products, deleteProduct, refresh }) {
-  const onDelete = async (id) => {
-    try {
-      await deleteProduct({
-        variables: { id },
-      });
-      refresh();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+function ProductsList({ products, update, remove }) {
   if (products.loading) {
     return (
       <Wrapper>
@@ -38,16 +27,13 @@ function ProductsList({ products, deleteProduct, refresh }) {
             <ID>{item.id}</ID>
             <Name>{item.name}</Name>
             <Stock>{item.stock}kg</Stock>
-            <Stock>{item.balanceStock}kg</Stock>
-            <OptionItem
-              onClick={() => alert("Esta opção ainda não funciona")}
-              edit
-            >
+            <Stock>R${item.balanceStock}</Stock>
+            <OptionItem onClick={() => update(item.id)} edit>
               O
             </OptionItem>
             <OptionItem
               onClick={() => {
-                onDelete(item.id);
+                remove(item.id);
               }}
             >
               X

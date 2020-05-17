@@ -1,43 +1,44 @@
 import React from "react";
 import styled from "styled-components";
-import useProducts from "../../hooks/useProducts";
-import ProductsList from "../molecules/ProductsList";
-import ProductsForm from "../molecules/ProductsForm";
+import useProducts from "../../../hooks/useProducts";
+import ProductsList from "../../molecules/ProductsList";
+import ProductsForm from "../../molecules/ProductsAddForm";
 
 function DashboardProduct() {
-  const [products, refresh, addProducts, deleteProduct] = useProducts();
+  const [products, refresh, add, update, remove] = useProducts();
 
   return (
     <>
-      <Products>
+      <List>
         <Title>PRODUTOS</Title>
         <ProductsList
           products={products}
-          deleteProduct={deleteProduct}
+          remove={remove}
+          update={update.onUpdate}
           refresh={refresh}
         ></ProductsList>
-      </Products>
-      <Adder>
-        <Title>ADICIONAR</Title>
-        <ProductsForm Add={addProducts} refresh={refresh}></ProductsForm>
-      </Adder>
+      </List>
+      <Options>
+        <Title>EDITAR</Title>
+        <ProductsForm add={add}></ProductsForm>
+      </Options>
     </>
   );
 }
 
 const Wrapper = styled.div`
-  flex: 2;
   padding: 10px 0;
   display: flex;
   align-items: center;
   flex-direction: column;
 `;
 
-const Products = styled(Wrapper)`
+const List = styled(Wrapper)`
+  flex: 2;
   border-right: 1px dashed rgb(80, 80, 80);
 `;
 
-const Adder = styled(Wrapper)`
+const Options = styled(Wrapper)`
   flex: 1.3;
 `;
 
