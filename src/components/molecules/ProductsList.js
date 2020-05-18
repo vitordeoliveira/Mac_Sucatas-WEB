@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import { AiOutlineReload } from "react-icons/ai";
 
-function ProductsList({ products, dispatch, remove }) {
+function ProductsList({ products, dispatch, remove, refresh }) {
   if (products.loading) {
     return (
       <Wrapper>
@@ -12,7 +13,15 @@ function ProductsList({ products, dispatch, remove }) {
 
   return (
     <>
-      <Title>PRODUTOS</Title>
+      <Title>
+        PRODUTOS{" "}
+        <Refresh
+          onClick={() => {
+            refresh();
+          }}
+          size={20}
+        ></Refresh>
+      </Title>
 
       <Wrapper>
         <Header>
@@ -59,6 +68,11 @@ const Wrapper = styled.div`
 
 const Title = styled.h1`
   color: rgb(50, 50, 50);
+`;
+
+const Refresh = styled(AiOutlineReload)`
+  color: green;
+  cursor: pointer;
 `;
 
 const Content = styled.ul`

@@ -5,16 +5,15 @@ import Button from "../../atoms/Button";
 
 function Update({ state, dispatch, update, refresh }) {
   const [formdata, setFormdata] = useState(state);
+
   const { id, name, stock, balanceStock } = formdata;
 
   useEffect(() => {
     setFormdata(state);
   }, [state]);
-
   const onchange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
   };
-
   const onclick = async () => {
     try {
       await dispatch({
@@ -25,7 +24,10 @@ function Update({ state, dispatch, update, refresh }) {
         stock,
         balanceStock,
       });
+
       await refresh();
+      console.log("hum");
+
       dispatch({ type: "offUpdate" });
     } catch (error) {
       console.log(error);
