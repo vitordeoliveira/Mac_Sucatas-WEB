@@ -28,7 +28,7 @@ function DashboardProduct() {
           <Update
             state={state}
             dispatch={dispatch}
-            update={update}
+            // update={update}
             refresh={refresh}
           ></Update>
         )}

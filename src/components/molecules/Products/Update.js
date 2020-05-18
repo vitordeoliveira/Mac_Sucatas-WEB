@@ -10,23 +10,23 @@ function Update({ state, dispatch, update, refresh }) {
 
   useEffect(() => {
     setFormdata(state);
-  }, [state]);
+    refresh();
+  }, [state, refresh]);
   const onchange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
   };
   const onclick = async () => {
     try {
-      await dispatch({
-        type: "update",
-        update: update,
-        id,
-        name,
-        stock,
-        balanceStock,
+      await update({
+        variables: {
+          id,
+          name,
+          stock: Number(stock),
+          balanceStock: Number(balanceStock),
+        },
       });
 
-      await refresh();
-      console.log("hum");
+      refresh();
 
       dispatch({ type: "offUpdate" });
     } catch (error) {

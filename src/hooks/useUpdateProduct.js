@@ -43,21 +43,6 @@ function reducer(state, payload) {
       }
       return state;
 
-    case "update":
-      const update = async () => {
-        await payload.update({
-          variables: {
-            id: payload.id,
-            name: payload.name,
-            stock: Number(payload.stock),
-            balanceStock: Number(payload.balanceStock),
-          },
-        });
-      };
-      update();
-
-      return { ...state };
-
     case "onUpdate":
       return {
         ...state,
