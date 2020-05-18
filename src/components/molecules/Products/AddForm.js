@@ -33,7 +33,7 @@ function Adder({ add }) {
         <Input
           onChange={(e) => setBalanceStock(e.target.value)}
           value={balanceStock}
-          placeholder="Balanรงo"
+          placeholder={`Balan\u00e7o`}
         ></Input>
         <Button onClick={onclick}>Enviar</Button>
       </Wrapper>

@@ -33,7 +33,7 @@ function Update({ state, offUpdate, update, refresh }) {
   };
   return (
     <>
-      <Title>Editar</Title>
+      <Title>EDITAR</Title>
       <Wrapper>
         <Input
           value={name}
@@ -51,7 +51,7 @@ function Update({ state, offUpdate, update, refresh }) {
           value={balanceStock}
           name="balanceStock"
           onChange={(e) => onchange(e)}
-          placeholder="Balanรงo"
+          placeholder={`Balan\u00e7o`}
         ></Input>
         <Button onClick={onclick}>Enviar</Button>
       </Wrapper>
