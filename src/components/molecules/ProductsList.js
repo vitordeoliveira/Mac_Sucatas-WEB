@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-function ProductsList({ products, update, remove }) {
+function ProductsList({ products, onUpdate, remove }) {
   if (products.loading) {
     return (
       <Wrapper>
@@ -11,41 +11,54 @@ function ProductsList({ products, update, remove }) {
   }
 
   return (
-    <Wrapper>
-      <Title>
-        <ID>ID</ID>
-        <Name>Nome</Name>
-        <Stock>Estoque</Stock>
-        <Stock>Balanço</Stock>
-        <Option>Editar</Option>
-        <Option>Excluir</Option>
-      </Title>
+    <>
+      <Title>PRODUTOS</Title>
 
-      {products.data.getProduct &&
-        products.data.getProduct.map((item) => (
-          <Items key={item.id}>
-            <ID>{item.id}</ID>
-            <Name>{item.name}</Name>
-            <Stock>{item.stock}kg</Stock>
-            <Stock>R${item.balanceStock}</Stock>
-            <OptionItem onClick={() => update(item.id)} edit>
-              O
-            </OptionItem>
-            <OptionItem
-              onClick={() => {
-                remove(item.id);
-              }}
-            >
-              X
-            </OptionItem>
-          </Items>
-        ))}
-    </Wrapper>
+      <Wrapper>
+        <Header>
+          <ID>ID</ID>
+          <Name>Nome</Name>
+          <Stock>Estoque</Stock>
+          <Stock>Balanço</Stock>
+          <Option>Editar</Option>
+          <Option>Excluir</Option>
+        </Header>
+
+        {products.data.getProduct &&
+          products.data.getProduct.map((item) => (
+            <Items key={item.id}>
+              <ID>{item.id}</ID>
+              <Name>{item.name}</Name>
+              <Stock>{item.stock}kg</Stock>
+              <Stock>R${item.balanceStock}</Stock>
+              <OptionItem
+                onClick={() => {
+                  onUpdate(item.id);
+                }}
+                edit
+              >
+                O
+              </OptionItem>
+              <OptionItem
+                onClick={() => {
+                  remove(item.id);
+                }}
+              >
+                X
+              </OptionItem>
+            </Items>
+          ))}
+      </Wrapper>
+    </>
   );
 }
 
 const Wrapper = styled.div`
   width: 90%;
+`;
+
+const Title = styled.h1`
+  color: rgb(50, 50, 50);
 `;
 
 const Content = styled.ul`
@@ -54,7 +67,7 @@ const Content = styled.ul`
   padding: 0;
 `;
 
-const Title = styled(Content)`
+const Header = styled(Content)`
   font-weight: bold;
 `;
 

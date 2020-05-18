@@ -1,26 +1,37 @@
 import React from "react";
 import styled from "styled-components";
 import useProducts from "../../../hooks/useProducts";
+import useUpdateProduct from "../../../hooks/useUpdateProduct";
 import ProductsList from "../../molecules/ProductsList";
-import ProductsForm from "../../molecules/ProductsAddForm";
+
+import Adder from "../../molecules/Products/AddForm";
+import Update from "../../molecules/Products/Update";
 
 function DashboardProduct() {
-  const [products, refresh, add, update, remove] = useProducts();
+  const [products, refresh, add, remove] = useProducts();
+  const [mode, onUpdate, offUpdate, state, update] = useUpdateProduct();
 
   return (
     <>
       <List>
-        <Title>PRODUTOS</Title>
         <ProductsList
           products={products}
           remove={remove}
-          update={update.onUpdate}
+          onUpdate={onUpdate}
           refresh={refresh}
         ></ProductsList>
       </List>
       <Options>
-        <Title>EDITAR</Title>
-        <ProductsForm add={add}></ProductsForm>
+        {!mode ? (
+          <Adder add={add}></Adder>
+        ) : (
+          <Update
+            state={state}
+            offUpdate={offUpdate}
+            update={update}
+            refresh={refresh}
+          ></Update>
+        )}
       </Options>
     </>
   );
@@ -40,10 +51,6 @@ const List = styled(Wrapper)`
 
 const Options = styled(Wrapper)`
   flex: 1.3;
-`;
-
-const Title = styled.h1`
-  color: rgb(50, 50, 50);
 `;
 
 export default DashboardProduct;

@@ -1,56 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+// import Loading from "../atoms/Loading";
 
 import Button from "../../atoms/Button";
 
-function Update({ state, offUpdate, update, refresh }) {
-  const [formdata, setFormdata] = useState(state);
+function Adder({ add }) {
+  const [name, setName] = useState("");
+  const [stock, setStock] = useState("");
+  const [balanceStock, setBalanceStock] = useState("");
 
-  const { id, name, stock, balanceStock } = formdata;
-
-  useEffect(() => {
-    setFormdata(state);
-  }, [state]);
-  const onchange = (e) => {
-    setFormdata({ ...formdata, [e.target.name]: e.target.value });
+  const onclick = () => {
+    add(name, stock, balanceStock);
+    setName("");
+    setStock("");
+    setBalanceStock("");
   };
-  const onclick = async () => {
-    try {
-      await update({
-        variables: {
-          id,
-          name,
-          stock: Number(stock),
-          balanceStock: Number(balanceStock),
-        },
-      });
 
-      refresh();
-      offUpdate();
-    } catch (error) {
-      console.log(error);
-    }
-  };
   return (
     <>
-      <Title>Editar</Title>
+      <Title>ADICIONAR</Title>
       <Wrapper>
         <Input
+          onChange={(e) => setName(e.target.value)}
           value={name}
-          name="name"
-          onChange={(e) => onchange(e)}
           placeholder="Nome"
         ></Input>
         <Input
+          onChange={(e) => setStock(e.target.value)}
           value={stock}
-          name="stock"
-          onChange={(e) => onchange(e)}
           placeholder="Estoque"
         ></Input>
         <Input
+          onChange={(e) => setBalanceStock(e.target.value)}
           value={balanceStock}
-          name="balanceStock"
-          onChange={(e) => onchange(e)}
           placeholder="Balanรงo"
         ></Input>
         <Button onClick={onclick}>Enviar</Button>
@@ -92,4 +74,4 @@ const Input = styled.input`
   }
 `;
 
-export default Update;
+export default Adder;

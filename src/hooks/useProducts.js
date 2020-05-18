@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
@@ -23,22 +22,6 @@ const GETPRODUCTS = gql`
   }
 `;
 
-const UPDATEPRODUCT = gql`
-  mutation updateProduct(
-    $id: ID!
-    $name: String
-    $stock: Int
-    $balanceStock: Float
-  ) {
-    updateProduct(
-      id: $id
-      name: $name
-      stock: $stock
-      balanceStock: $balanceStock
-    )
-  }
-`;
-
 const DELETEPRODUCT = gql`
   mutation deleteProduct($id: ID!) {
     deleteProduct(id: $id) {
@@ -49,9 +32,7 @@ const DELETEPRODUCT = gql`
 `;
 
 function useProducts() {
-  const [updateMode, setUpdateMode] = useState(false);
   const [add] = useMutation(ADDPRODUCT);
-  const [update] = useMutation(UPDATEPRODUCT);
   const [remove] = useMutation(DELETEPRODUCT);
   const { loading, data, refetch } = useQuery(GETPRODUCTS);
 
@@ -86,18 +67,7 @@ function useProducts() {
     }
   };
 
-  function onUpdate(id) {
-    setUpdateMode(true);
-    console.log(id);
-  }
-
-  return [
-    { loading, data },
-    refetch,
-    onAdd,
-    { updateMode, onUpdate },
-    onRemove,
-  ];
+  return [{ loading, data }, refetch, onAdd, onRemove];
 }
 
 export default useProducts;
