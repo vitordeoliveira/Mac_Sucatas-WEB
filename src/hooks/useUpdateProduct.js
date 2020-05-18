@@ -1,4 +1,4 @@
-import { useState, useReducer, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
@@ -29,15 +29,46 @@ const UPDATEPRODUCT = gql`
   }
 `;
 
-function reducer(state, item) {
-  switch (item.loading) {
-    case true:
-      return state;
-    case false:
-      if (item.data.getProduct.length !== 0) {
-        return item.data.getProduct[0];
+function reducer(state, payload) {
+  switch (payload.type) {
+    case "load":
+      if (payload.data.getProduct.length !== 0) {
+        return {
+          ...state,
+          id: payload.data.getProduct[0].id,
+          name: payload.data.getProduct[0].name,
+          stock: payload.data.getProduct[0].stock,
+          balanceStock: payload.data.getProduct[0].balanceStock,
+        };
       }
       return state;
+
+    case "update":
+      const update = async () => {
+        await payload.update({
+          variables: {
+            id: payload.id,
+            name: payload.name,
+            stock: Number(payload.stock),
+            balanceStock: Number(payload.balanceStock),
+          },
+        });
+      };
+      update();
+
+      return { ...state };
+
+    case "onUpdate":
+      return {
+        ...state,
+        id: payload.id,
+        showUpdate: true,
+      };
+    case "offUpdate":
+      return {
+        ...state,
+        showUpdate: false,
+      };
 
     default:
       return state;
@@ -50,31 +81,21 @@ function useUpdateProduct() {
     name: "",
     stock: "",
     balanceStock: "",
+    showUpdate: false,
   });
-
-  const [ID, setID] = useState(0);
-  const [updateMode, setUpdateMode] = useState(false);
-
-  const { loading, data } = useQuery(GETPRODUCT, {
-    variables: { id: ID },
-  });
-
   const [update] = useMutation(UPDATEPRODUCT);
 
+  const { loading, data } = useQuery(GETPRODUCT, {
+    variables: { id: state.id },
+  });
+
   useEffect(() => {
-    dispatch({ loading, data });
+    if (!loading) {
+      dispatch({ type: "load", data });
+    }
   }, [loading, data]);
 
-  function onUpdate(id) {
-    setUpdateMode(true);
-    setID(id);
-  }
-
-  function offUpdate() {
-    setUpdateMode(false);
-  }
-
-  return [updateMode, onUpdate, offUpdate, state, update];
+  return [dispatch, state, update];
 }
 
 export default useUpdateProduct;

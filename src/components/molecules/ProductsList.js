@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-function ProductsList({ products, onUpdate, remove }) {
+function ProductsList({ products, dispatch, remove }) {
   if (products.loading) {
     return (
       <Wrapper>
@@ -33,7 +33,7 @@ function ProductsList({ products, onUpdate, remove }) {
               <Stock>R${item.balanceStock}</Stock>
               <OptionItem
                 onClick={() => {
-                  onUpdate(item.id);
+                  dispatch({ type: "onUpdate", id: item.id });
                 }}
                 edit
               >

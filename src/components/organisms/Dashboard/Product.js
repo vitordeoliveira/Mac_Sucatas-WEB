@@ -4,12 +4,12 @@ import useProducts from "../../../hooks/useProducts";
 import useUpdateProduct from "../../../hooks/useUpdateProduct";
 import ProductsList from "../../molecules/ProductsList";
 
-import Adder from "../../molecules/Products/AddForm";
+import Adder from "../../molecules/Products/Adder";
 import Update from "../../molecules/Products/Update";
 
 function DashboardProduct() {
   const [products, refresh, add, remove] = useProducts();
-  const [mode, onUpdate, offUpdate, state, update] = useUpdateProduct();
+  const [dispatch, state, update] = useUpdateProduct();
 
   return (
     <>
@@ -17,17 +17,17 @@ function DashboardProduct() {
         <ProductsList
           products={products}
           remove={remove}
-          onUpdate={onUpdate}
+          dispatch={dispatch}
           refresh={refresh}
         ></ProductsList>
       </List>
       <Options>
-        {!mode ? (
+        {!state.showUpdate ? (
           <Adder add={add}></Adder>
         ) : (
           <Update
             state={state}
-            offUpdate={offUpdate}
+            dispatch={dispatch}
             update={update}
             refresh={refresh}
           ></Update>
