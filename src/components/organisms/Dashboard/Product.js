@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import useProducts from "../../../hooks/useProducts";
 import useUpdateProduct from "../../../hooks/useUpdateProduct";
-import ProductsList from "../../molecules/ProductsList";
+import ProductsList from "../../molecules/Products/List";
 
 import Adder from "../../molecules/Products/Adder";
 import Update from "../../molecules/Products/Update";
@@ -28,7 +28,7 @@ function DashboardProduct() {
           <Update
             state={state}
             dispatch={dispatch}
-            // update={update}
+            update={update}
             refresh={refresh}
           ></Update>
         )}

@@ -45,7 +45,7 @@ function useProducts() {
           balanceStock: Number(balanceStock.replace(",", ".")),
         },
       });
-      refetch();
+      refetch({ reload: true });
     } catch ({ graphQLErrors }) {
       alert(graphQLErrors[0].message);
     }
@@ -61,7 +61,7 @@ function useProducts() {
       if (!success) {
         alert(error);
       }
-      refetch();
+      refetch({ reload: true });
     } catch ({ graphQLErrors }) {
       alert(graphQLErrors[0].message);
     }

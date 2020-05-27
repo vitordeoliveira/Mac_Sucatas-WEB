@@ -5,18 +5,21 @@ import Button from "../../atoms/Button";
 
 function Update({ state, dispatch, update, refresh }) {
   const [formdata, setFormdata] = useState(state);
+  const [loading, setLoading] = useState(false);
 
   const { id, name, stock, balanceStock } = formdata;
 
   useEffect(() => {
     setFormdata(state);
-    refresh();
-  }, [state, refresh]);
+  }, [state]);
+
   const onchange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
   };
+
   const onclick = async () => {
     try {
+      setLoading(true);
       await update({
         variables: {
           id,
@@ -26,7 +29,8 @@ function Update({ state, dispatch, update, refresh }) {
         },
       });
 
-      refresh();
+      refresh({ reload: true });
+      setLoading(false);
 
       dispatch({ type: "offUpdate" });
     } catch (error) {
@@ -55,7 +59,7 @@ function Update({ state, dispatch, update, refresh }) {
           onChange={(e) => onchange(e)}
           placeholder={`Balan\u00e7o`}
         ></Input>
-        <Button onClick={onclick}>Enviar</Button>
+        <Button onClick={onclick}>{!loading ? "Enviar" : "loading"}</Button>
       </Wrapper>
     </>
   );
