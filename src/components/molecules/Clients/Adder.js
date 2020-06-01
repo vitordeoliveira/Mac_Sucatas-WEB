@@ -1,19 +1,46 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { gql } from "apollo-boost";
+import { useMutation } from "@apollo/react-hooks";
+
 // import Loading from "../atoms/Loading";
 
 import Button from "../../atoms/Button";
 
-function Adder({ add }) {
-  const [name, setName] = useState("");
-  const [stock, setStock] = useState("");
-  const [balanceStock, setBalanceStock] = useState("");
+const ADDCLIENTS = gql`
+  mutation addClient(
+    $type: ID!
+    $name: String!
+    $email: String
+    $phone: String
+  ) {
+    addClient(type: $type, name: $name, email: $email, phone: $phone) {
+      name
+    }
+  }
+`;
 
-  const onclick = () => {
-    add(name, stock, balanceStock);
-    setName("");
-    setStock("");
-    setBalanceStock("");
+function Adder({ type, refetch }) {
+  const [fetch] = useMutation(ADDCLIENTS);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const typecode = type === "Fornecedor" ? 1 : 2;
+
+  const onclick = async () => {
+    try {
+      const { data } = await fetch({
+        variables: { type: typecode, name, email, phone },
+      });
+      console.log(data);
+      refetch();
+      setName("");
+      setEmail("");
+      setPhone("");
+    } catch (error) {
+      console.log({ error });
+    }
   };
 
   return (
@@ -26,14 +53,14 @@ function Adder({ add }) {
           placeholder="Nome"
         ></Input>
         <Input
-          onChange={(e) => setStock(e.target.value)}
-          value={stock}
-          placeholder="Estoque"
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          placeholder="e-mail"
         ></Input>
         <Input
-          onChange={(e) => setBalanceStock(e.target.value)}
-          value={balanceStock}
-          placeholder={`Balan\u00e7o`}
+          onChange={(e) => setPhone(e.target.value)}
+          value={phone}
+          placeholder={"Telefone"}
         ></Input>
         <Button onClick={onclick}>Enviar</Button>
       </Wrapper>

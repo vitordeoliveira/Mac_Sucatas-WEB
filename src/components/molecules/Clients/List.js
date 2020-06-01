@@ -1,58 +1,32 @@
 import React from "react";
 import styled from "styled-components";
-import { AiOutlineReload } from "react-icons/ai";
+// import { AiOutlineReload } from "react-icons/ai";
 
-function List({ products, dispatch, remove, refresh }) {
+function List({ title, clients, loading }) {
   return (
     <>
-      <Title>
-        PRODUTOS{" "}
-        <Refresh
-          onClick={() => {
-            refresh({ reload: true });
-          }}
-          size={20}
-        ></Refresh>
-      </Title>
+      <Title>{title}</Title>
 
       <Wrapper>
         <Header>
           <ID>ID</ID>
           <Name>Nome</Name>
-          <Stock>Estoque</Stock>
-          <Stock>Balanço</Stock>
+          <Email>Email</Email>
+          <Phone>Telefone</Phone>
           <Option>Editar</Option>
           <Option>Excluir</Option>
         </Header>
 
-        {products.loading ? (
-          <Loading>loading...</Loading>
-        ) : (
-          products.data.getProduct &&
-          products.data.getProduct.map((item) => (
-            <Items key={item.id}>
-              <ID>{item.id}</ID>
-              <Name>{item.name}</Name>
-              <Stock>{item.stock}kg</Stock>
-              <Stock>R${item.balanceStock}</Stock>
-              <OptionItem
-                onClick={() => {
-                  dispatch({ type: "onUpdate", id: item.id });
-                }}
-                edit
-              >
-                O
-              </OptionItem>
-              <OptionItem
-                onClick={() => {
-                  remove(item.id);
-                }}
-              >
-                X
-              </OptionItem>
-            </Items>
-          ))
-        )}
+        {clients.map((client) => (
+          <Items key={client.id}>
+            <ID>{client.id}</ID>
+            <Name>{client.name}</Name>
+            <Email>{client.email}</Email>
+            <Phone>{client.phone}</Phone>
+            <OptionItem edit>O</OptionItem>
+            <OptionItem>X</OptionItem>
+          </Items>
+        ))}
       </Wrapper>
     </>
   );
@@ -66,20 +40,10 @@ const Title = styled.h1`
   color: rgb(50, 50, 50);
 `;
 
-const Refresh = styled(AiOutlineReload)`
-  color: green;
-  cursor: pointer;
-`;
-
 const Content = styled.ul`
   display: flex;
   justify-content: space-between;
   padding: 0;
-`;
-
-const Loading = styled.h1`
-  margin-top: 80px;
-  text-align: center;
 `;
 
 const Header = styled(Content)`
@@ -112,7 +76,11 @@ const Name = styled(Item)`
   user-select: initial;
 `;
 
-const Stock = styled(Item)`
+const Email = styled(Item)`
+  flex: 3;
+`;
+
+const Phone = styled(Item)`
   flex: 3;
 `;
 
