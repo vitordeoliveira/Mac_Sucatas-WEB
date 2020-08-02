@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import Button from "../../atoms/Button";
 
-function Adder({ add }) {
+function Adder({ add, provider }) {
   const [name, setName] = useState("");
   const [stock, setStock] = useState("");
   const [balanceStock, setBalanceStock] = useState("");
@@ -18,7 +18,18 @@ function Adder({ add }) {
 
   return (
     <>
-      <Title>ADICIONAR</Title>
+      <Title>
+        ADICIONAR{" "}
+        {provider.adder ? (
+          <Close
+            onClick={() => {
+              provider.setAdder(false);
+            }}
+          >
+            +
+          </Close>
+        ) : null}
+      </Title>
       <Wrapper>
         <Input
           onChange={(e) => setName(e.target.value)}
@@ -54,6 +65,8 @@ const Wrapper = styled.div`
 
 const Title = styled.h1`
   color: rgb(50, 50, 50);
+  display: flex;
+  align-items: center;
 `;
 
 const Input = styled.input`
@@ -71,6 +84,18 @@ const Input = styled.input`
 
   ::placeholder {
     letter-spacing: 2px;
+  }
+`;
+
+const Close = styled.span`
+  display: none;
+  @media (max-width: 465px) {
+    font-size: 50px;
+    cursor: pointer;
+    margin-left: 8px;
+    color: rgb(150, 90, 90);
+    transform: rotate(45deg);
+    display: block;
   }
 `;
 

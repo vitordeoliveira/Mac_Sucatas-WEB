@@ -7,41 +7,36 @@ import { useMutation } from "@apollo/react-hooks";
 
 import Button from "../../atoms/Button";
 
-const ADDCLIENTS = gql`
-  mutation addClient(
-    $type: ID!
+const UPDATECLIENTS = gql`
+  mutation updateClient(
+    $id: ID!
     $name: String!
     $email: String
     $phone: String
   ) {
-    addClient(type: $type, name: $name, email: $email, phone: $phone) {
-      name
-    }
+    updateClient(id: $id, name: $name, email: $email, phone: $phone)
   }
 `;
 
-function Adder({ type, refetch, provider }) {
-  const [fetch] = useMutation(ADDCLIENTS);
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+function Edit({ refetch, client, provider }) {
+  const [fetch] = useMutation(UPDATECLIENTS);
+  const [name, setName] = useState(client.name);
+  const [email, setEmail] = useState(client.email);
+  const [phone, setPhone] = useState(client.phone);
   const [loading, setLoading] = useState(false);
-
-  const typecode = type === "Fornecedor" ? 1 : 2;
 
   const onclick = async () => {
     try {
       setLoading(true);
       await fetch({
-        variables: { type: typecode, name, email, phone },
+        variables: { id: client.id, name, email, phone },
       });
-      setLoading(false);
-
       refetch();
       setName("");
       setEmail("");
       setPhone("");
-      provider.dispatch((state) => ({ ...state, add: false }));
+      setLoading(false);
+      provider.dispatch({ update: false, client: null, add: false });
     } catch (error) {
       console.log({ error });
       setLoading(false);
@@ -51,7 +46,7 @@ function Adder({ type, refetch, provider }) {
   return (
     <>
       <Title>
-        ADICIONAR{" "}
+        EDITAR{" "}
         {provider.state.add ? (
           <Close
             onClick={() => {
@@ -78,7 +73,7 @@ function Adder({ type, refetch, provider }) {
           value={phone}
           placeholder={"Telefone"}
         ></Input>
-        <Button onClick={onclick}>{loading ? "loading" : "Enviar"}</Button>
+        <Button onClick={onclick}>{loading ? "loading" : "Salvar"}</Button>
       </Wrapper>
     </>
   );
@@ -102,8 +97,8 @@ const Title = styled.h1`
 `;
 
 const Input = styled.input`
-  width: 90%;
   border-radius: 50px;
+  width: 90%;
   border: 0;
   height: 35px;
   padding: 0 50px;
@@ -132,4 +127,4 @@ const Close = styled.span`
   }
 `;
 
-export default Adder;
+export default Edit;

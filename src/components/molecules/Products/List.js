@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { AiOutlineReload } from "react-icons/ai";
 
-function List({ products, dispatch, remove, refresh }) {
+function List({ products, dispatch, remove, refresh, provider }) {
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
   return (
     <>
       <Title>
@@ -13,6 +17,23 @@ function List({ products, dispatch, remove, refresh }) {
           }}
           size={20}
         ></Refresh>
+        {provider.adder ? (
+          <Close
+            onClick={() => {
+              provider.setAdder(false);
+            }}
+          >
+            +
+          </Close>
+        ) : (
+          <Add
+            onClick={() => {
+              provider.setAdder(true);
+            }}
+          >
+            +
+          </Add>
+        )}
       </Title>
 
       <Wrapper>
@@ -37,6 +58,7 @@ function List({ products, dispatch, remove, refresh }) {
               <Stock>R${item.balanceStock}</Stock>
               <OptionItem
                 onClick={() => {
+                  provider.setAdder(true);
                   dispatch({ type: "onUpdate", id: item.id });
                 }}
                 edit
@@ -64,11 +86,26 @@ const Wrapper = styled.div`
 
 const Title = styled.h1`
   color: rgb(50, 50, 50);
+  display: flex;
+  align-items: center;
 `;
 
 const Refresh = styled(AiOutlineReload)`
-  color: green;
+  color: rgb(90, 150, 90);
   cursor: pointer;
+  margin: 8px;
+`;
+
+const Add = styled.span`
+  font-size: 50px;
+  color: rgb(90, 150, 90);
+  cursor: pointer;
+  margin-left: 8px;
+`;
+
+const Close = styled(Add)`
+  color: rgb(150, 90, 90);
+  transform: rotate(45deg);
 `;
 
 const Content = styled.ul`
@@ -100,20 +137,21 @@ const Item = styled.li`
   list-style: none;
   text-align: center;
   margin: 8px 0;
-  user-select: none;
 `;
 
 const ID = styled(Item)`
   flex: 1;
+  border-right: 1px solid;
 `;
 
 const Name = styled(Item)`
   flex: 2;
-  user-select: initial;
+  border-right: 1px solid;
 `;
 
 const Stock = styled(Item)`
   flex: 3;
+  border-right: 1px solid;
 `;
 
 const Option = styled(Item)`

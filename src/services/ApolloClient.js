@@ -6,7 +6,7 @@ import {
 } from "apollo-boost";
 
 const httpLink = new HttpLink({
-  // uri: "https://macsucatas.gexus.com.br/graphql",
+  // uri: "https://gexus.com.br/graphql",
   uri: "http://localhost:5000/graphql",
 });
 

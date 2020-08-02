@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
 import ClientsList from "../../molecules/Clients/List";
 import Adder from "../../molecules/Clients/Adder";
+import Edit from "../../molecules/Clients/Edit";
 
 const GETCLIENTS = gql`
   {
@@ -20,6 +21,20 @@ const GETCLIENTS = gql`
 
 function DashboardClients({ type }) {
   const { loading, data, refetch } = useQuery(GETCLIENTS);
+  const [state, dispatch] = useState({
+    update: false,
+    client: null,
+  });
+
+  const provider = useMemo(() => ({ state, dispatch }), [state, dispatch]);
+
+  useEffect(() => {
+    dispatch({
+      update: false,
+      client: null,
+      add: false,
+    });
+  }, [type]);
 
   if (loading) {
     return <h1>loading</h1>;
@@ -35,12 +50,24 @@ function DashboardClients({ type }) {
         <ClientsList
           title={type}
           clients={filter}
-          loading={loading}
+          refetch={refetch}
+          dispatch={dispatch}
+          state={state}
         ></ClientsList>
       </List>
-      <Options>
-        <Adder type={type} refetch={refetch}></Adder>
-      </Options>
+      {state.add ? (
+        <Options>
+          {state.update ? (
+            <Edit
+              client={state.client}
+              refetch={refetch}
+              provider={provider}
+            ></Edit>
+          ) : (
+            <Adder type={type} refetch={refetch} provider={provider}></Adder>
+          )}
+        </Options>
+      ) : null}
     </>
   );
 }
@@ -54,11 +81,18 @@ const Wrapper = styled.div`
 
 const List = styled(Wrapper)`
   flex: 2;
-  border-right: 1px dashed rgb(80, 80, 80);
 `;
 
 const Options = styled(Wrapper)`
-  flex: 1.3;
+  flex: 1;
+  border-left: 1px dashed rgb(80, 80, 80);
+  @media (max-width: 465px) {
+    position: absolute;
+    background: lightgray;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
 `;
 
 export default DashboardClients;

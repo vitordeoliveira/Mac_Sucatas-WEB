@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import useProducts from "../../../hooks/useProducts";
 import useUpdateProduct from "../../../hooks/useUpdateProduct";
@@ -10,6 +10,8 @@ import Update from "../../molecules/Products/Update";
 function DashboardProduct() {
   const [products, refresh, add, remove] = useProducts();
   const [dispatch, state, update] = useUpdateProduct();
+  const [adder, setAdder] = useState(false);
+  const provider = useMemo(() => ({ adder, setAdder }), [adder, setAdder]);
 
   return (
     <>
@@ -19,20 +21,24 @@ function DashboardProduct() {
           remove={remove}
           dispatch={dispatch}
           refresh={refresh}
+          provider={provider}
         ></ProductsList>
       </List>
-      <Options>
-        {!state.showUpdate ? (
-          <Adder add={add}></Adder>
-        ) : (
-          <Update
-            state={state}
-            dispatch={dispatch}
-            update={update}
-            refresh={refresh}
-          ></Update>
-        )}
-      </Options>
+      {provider.adder ? (
+        <Options>
+          {!state.showUpdate ? (
+            <Adder add={add} provider={provider}></Adder>
+          ) : (
+            <Update
+              state={state}
+              dispatch={dispatch}
+              update={update}
+              refresh={refresh}
+              provider={provider}
+            ></Update>
+          )}
+        </Options>
+      ) : null}
     </>
   );
 }
@@ -46,11 +52,19 @@ const Wrapper = styled.div`
 
 const List = styled(Wrapper)`
   flex: 2;
-  border-right: 1px dashed rgb(80, 80, 80);
 `;
 
 const Options = styled(Wrapper)`
   flex: 1.3;
+  border-left: 1px dashed rgb(80, 80, 80);
+
+  @media (max-width: 465px) {
+    position: absolute;
+    background: lightgray;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
 `;
 
 export default DashboardProduct;

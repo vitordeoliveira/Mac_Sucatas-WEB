@@ -1,11 +1,55 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-// import { AiOutlineReload } from "react-icons/ai";
+import { useMutation } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 
-function List({ title, clients, loading }) {
+const DELETECLIENTS = gql`
+  mutation deleteClient($id: ID!) {
+    deleteClient(id: $id)
+  }
+`;
+
+function List({ title, clients, refetch, dispatch, state }) {
+  const [ondelete] = useMutation(DELETECLIENTS);
+  const [loading, setLoading] = useState(false);
+
+  const onclick = async (id) => {
+    try {
+      setLoading(true);
+      await ondelete({
+        variables: {
+          id,
+        },
+      });
+      setLoading(false);
+      refetch();
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-      <Title>{title}</Title>
+      <Title>
+        {title}
+        {state.add ? (
+          <Close
+            onClick={() => {
+              dispatch((state) => ({ ...state, add: false }));
+            }}
+          >
+            +
+          </Close>
+        ) : (
+          <Add
+            onClick={() => {
+              dispatch((state) => ({ ...state, add: true }));
+            }}
+          >
+            +
+          </Add>
+        )}
+      </Title>
 
       <Wrapper>
         <Header>
@@ -23,8 +67,17 @@ function List({ title, clients, loading }) {
             <Name>{client.name}</Name>
             <Email>{client.email}</Email>
             <Phone>{client.phone}</Phone>
-            <OptionItem edit>O</OptionItem>
-            <OptionItem>X</OptionItem>
+            <OptionItem
+              edit
+              onClick={() =>
+                dispatch({ update: true, client: client, add: true })
+              }
+            >
+              O
+            </OptionItem>
+            <OptionItem onClick={() => onclick(client.id)}>
+              {loading ? "loading" : "X"}
+            </OptionItem>
           </Items>
         ))}
       </Wrapper>
@@ -33,16 +86,31 @@ function List({ title, clients, loading }) {
 }
 
 const Wrapper = styled.div`
-  width: 90%;
+  width: 95%;
 `;
 
 const Title = styled.h1`
   color: rgb(50, 50, 50);
+  display: flex;
+  align-items: center;
+`;
+
+const Add = styled.span`
+  font-size: 50px;
+  color: rgb(90, 150, 90);
+  cursor: pointer;
+  margin-left: 8px;
+`;
+
+const Close = styled(Add)`
+  color: rgb(150, 90, 90);
+  transform: rotate(45deg);
 `;
 
 const Content = styled.ul`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding: 0;
 `;
 
@@ -64,7 +132,7 @@ const Item = styled.li`
   list-style: none;
   text-align: center;
   margin: 8px 0;
-  user-select: none;
+  align-self: center;
 `;
 
 const ID = styled(Item)`
@@ -94,6 +162,7 @@ const Option = styled(Item)`
 
 const OptionItem = styled(Option)`
   cursor: pointer;
+  align-self: normal;
 
   ${(props) => (props.edit ? null : "border-radius: 0 15px 15px 0")};
   transition: all 0.5s;

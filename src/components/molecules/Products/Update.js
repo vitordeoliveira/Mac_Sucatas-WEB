@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import Button from "../../atoms/Button";
 
-function Update({ state, dispatch, update, refresh }) {
+function Update({ state, dispatch, update, refresh, provider }) {
   const [formdata, setFormdata] = useState(state);
   const [loading, setLoading] = useState(false);
 
@@ -31,15 +31,26 @@ function Update({ state, dispatch, update, refresh }) {
 
       refresh({ reload: true });
       setLoading(false);
-
       dispatch({ type: "offUpdate" });
+      provider.setAdder(false);
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <>
-      <Title>EDITAR</Title>
+      <Title>
+        EDITAR{" "}
+        {provider.adder ? (
+          <Close
+            onClick={() => {
+              provider.setAdder(false);
+            }}
+          >
+            +
+          </Close>
+        ) : null}
+      </Title>
       <Wrapper>
         <Input
           value={name}
@@ -78,9 +89,12 @@ const Wrapper = styled.div`
 
 const Title = styled.h1`
   color: rgb(50, 50, 50);
+  display: flex;
+  align-items: center;
 `;
 
 const Input = styled.input`
+  width: 90%;
   border-radius: 50px;
   border: 0;
   height: 35px;
@@ -96,6 +110,14 @@ const Input = styled.input`
   ::placeholder {
     letter-spacing: 2px;
   }
+`;
+
+const Close = styled.span`
+  font-size: 50px;
+  cursor: pointer;
+  margin-left: 8px;
+  color: rgb(150, 90, 90);
+  transform: rotate(45deg);
 `;
 
 export default Update;

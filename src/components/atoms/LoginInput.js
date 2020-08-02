@@ -38,6 +38,7 @@ const Input = styled.input`
   border: 2px solid #2c6126;
   text-align: center;
   font-size: 15px;
+  width: 100%;
 
   :focus {
     outline-width: 0;

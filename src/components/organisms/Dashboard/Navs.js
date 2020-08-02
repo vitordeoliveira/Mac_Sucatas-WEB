@@ -19,7 +19,7 @@ function DashboardNavs() {
         Dashboard
       </Item>
       <Item to="product" icon={<FaBox></FaBox>}>
-        Adicionar Produtos
+        Produtos/Estoque
       </Item>
       <Item to="buy" icon={<FaCartPlus></FaCartPlus>}>
         Compra
@@ -34,7 +34,7 @@ function DashboardNavs() {
         Compradores
       </Item>
       <Item to="cust" icon={<FaMoneyBillWave></FaMoneyBillWave>}>
-        Custo Operacional
+        Funcionários
       </Item>
       <Item logout icon={<AiOutlineLogout></AiOutlineLogout>}>
         LogOut
