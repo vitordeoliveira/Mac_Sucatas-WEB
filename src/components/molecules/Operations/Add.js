@@ -1,30 +1,59 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 
-export default function Add({ provider }) {
-  const { dispatch } = provider;
-  const [data, setData] = useState({
-    value: "",
-    amount: "",
-  });
-  const { value, amount } = data;
+import List from "../../atoms/Operation/List";
 
-  const onchange = (e) => {
-    e.persist();
-    const last = e.target.value.slice(-1);
-    const checkNumber = Number(last);
-    if (!isNaN(checkNumber) || last === "." || last === ",") {
-      setData((data) => ({ ...data, [e.target.name]: e.target.value }));
+const GETPRODUCTS = gql`
+  {
+    getProduct {
+      id
+      name
     }
-  };
+  }
+`;
 
-  const onsubmit = () => {
-    if (value !== "" && amount !== "") {
+export default function Add({ provider, onsubmit }) {
+  const { state, dispatch } = provider;
+  const { loading, data } = useQuery(GETPRODUCTS);
+
+  useEffect(() => {
+    if (!loading) {
+      const arr = data.getProduct;
+      const newarr = arr.map((item) => {
+        return {
+          id: item.id,
+          name: item.name,
+          value: "",
+          amount: "",
+          added: false,
+        };
+      });
       dispatch({
-        type: "CHANGE_VALUES",
+        type: "LOAD_PRODUCTS",
         payload: {
-          value: value.replace(",", "."),
-          amount: amount.replace(",", "."),
+          products: newarr,
+        },
+      });
+    }
+  }, [data, loading, dispatch]);
+
+  const onadd = (index, value, amount) => {
+    if (value !== "" && amount !== "") {
+      const actual = state.products;
+      const obj = {
+        ...actual[index],
+        value,
+        amount,
+        added: !actual[index].added,
+      };
+      actual[index] = obj;
+
+      dispatch({
+        type: "LOAD_PRODUCTS",
+        payload: {
+          products: actual,
         },
       });
     }
@@ -32,15 +61,13 @@ export default function Add({ provider }) {
 
   return (
     <Wrapper>
-      <Text>Defina valor e quantidade</Text>
-      <Form>
-        <Label htmlFor="Amount">Quantidade(Kg)</Label>
-        <Input id="Amount" name="amount" value={amount} onChange={onchange} />
-        <Label htmlFor="Value">Valor/kg</Label>
-        <Input id="Value" name="value" value={value} onChange={onchange} />
+      <Text>Adicionar produtos a nota</Text>
+      <Button onClick={onsubmit}>Finalizar</Button>
 
-        <Button onClick={onsubmit}>Salvar valor</Button>
-      </Form>
+      {state.products &&
+        state.products.map((item, index) => (
+          <List key={item.id} item={item} index={index} onadd={onadd}></List>
+        ))}
     </Wrapper>
   );
 }
@@ -53,51 +80,14 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Text = styled.h3`
-  display: flex;
-  justify-content: center;
-  margin-bottom: 70px;
-  text-align: center;
-`;
-
-const Form = styled.div`
-  width: 100%;
-  min-height: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const Label = styled.label`
-  font-weight: bold;
-  margin: 15px 0;
-  font-size: 20px;
-`;
-const Input = styled.input`
-  width: 90%;
-  border-radius: 50px;
-  border: 0;
-  height: 35px;
-  padding: 0 50px;
-  border: 2px solid #2c6126;
-  text-align: center;
-  font-size: 15px;
-
-  :focus {
-    outline-width: 0;
-  }
-
-  ::placeholder {
-    letter-spacing: 2px;
-  }
-`;
+const Text = styled.h1``;
 
 const Button = styled.div`
-  margin-top: 100px;
   padding: 10px;
   background: rgb(90, 200, 90);
   border-radius: 10px;
   cursor: pointer;
+  margin: 10px;
 
   :hover {
     box-shadow: 0 0 1px black;

@@ -3,7 +3,7 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useHistory } from "react-router-dom";
 
-import { SelectProduct, SelectClient, Add } from "../../molecules/Operations";
+import { SelectClient, Add } from "../../molecules/Operations";
 
 const ADDPURCHASE = gql`
   mutation addPurchase(
@@ -33,19 +33,11 @@ const reducer = (state, { type, payload }) => {
         client: payload.id,
         screen: 2,
       };
-    case "SELECT_PRODUCT":
+    case "LOAD_PRODUCTS":
       return {
         ...state,
-        product: payload.id,
+        products: payload.products,
       };
-    case "CHANGE_VALUES":
-      return {
-        ...state,
-        value: payload.value,
-        amount: payload.amount,
-        screen: 3,
-      };
-
     default:
       return false;
   }
@@ -56,10 +48,8 @@ const Buy = () => {
 
   const [state, dispatch] = useReducer(reducer, {
     screen: 1,
-    product: null,
     client: null,
-    value: null,
-    amount: null,
+    products: [{ name: null, value: "", amount: "", added: false }],
   });
 
   const provider = useMemo(() => ({ state, dispatch }), [state, dispatch]);
@@ -68,35 +58,31 @@ const Buy = () => {
 
   const onsubmit = async () => {
     try {
-      await fetch({
-        variables: {
-          productId: state.product,
-          clientId: state.client,
-          value: Number(state.value),
-          amount: Number(state.amount),
-        },
-      });
+      await provider.state.products
+        .filter((item) => item.added === true)
+        .forEach(
+          async (item) =>
+            await fetch({
+              variables: {
+                productId: item.id,
+                clientId: state.client,
+                value: Number(item.value),
+                amount: Number(item.amount),
+              },
+            })
+        );
+
       history.push("/");
     } catch (error) {
       console.log(error);
     }
   };
   if (provider.state.screen === 1) {
-    return (
-      <SelectClient
-        provider={provider}
-        onsubmit={onsubmit}
-        type="1"
-      ></SelectClient>
-    );
+    return <SelectClient provider={provider} type="1"></SelectClient>;
   }
 
   if (provider.state.screen === 2) {
-    return <SelectProduct provider={provider} type="1"></SelectProduct>;
-  }
-
-  if (provider.state.screen === 3) {
-    return <Add provider={provider}></Add>;
+    return <Add provider={provider} onsubmit={onsubmit}></Add>;
   }
 };
 
