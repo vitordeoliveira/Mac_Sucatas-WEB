@@ -9,7 +9,6 @@ function OperationList({ item, index, onadd }) {
 
   return (
     <Wrapper>
-      <Name>{item.id}</Name>
       <Name>{item.name}</Name>
       <Input
         disabled={item.added}

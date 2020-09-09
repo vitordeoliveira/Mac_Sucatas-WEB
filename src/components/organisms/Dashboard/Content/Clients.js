@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
-import ClientsList from "../../molecules/Clients/List";
-import Adder from "../../molecules/Clients/Adder";
-import Edit from "../../molecules/Clients/Edit";
+import ClientsList from "../../../molecules/Clients/List";
+import Adder from "../../../molecules/Clients/Adder";
+import Edit from "../../../molecules/Clients/Edit";
 
 const GETCLIENTS = gql`
   {

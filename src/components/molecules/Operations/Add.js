@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
 import List from "../../atoms/Operation/List";
+import Option from "../../atoms/Operation/Options";
+// import Filter from "../../atoms/Operation/Filter";
 
 const GETPRODUCTS = gql`
   {
@@ -17,6 +19,7 @@ const GETPRODUCTS = gql`
 export default function Add({ provider, onsubmit }) {
   const { state, dispatch } = provider;
   const { loading, data } = useQuery(GETPRODUCTS);
+  const [products, setProducts] = useState(state.products);
 
   useEffect(() => {
     if (!loading) {
@@ -30,14 +33,27 @@ export default function Add({ provider, onsubmit }) {
           added: false,
         };
       });
+
+      newarr.sort((a, b) => {
+        const a_name = a.name.toUpperCase();
+        const b_name = b.name.toUpperCase();
+        if (a_name < b_name) return -1;
+        if (a_name > b_name) return 1;
+        return 0;
+      });
+
       dispatch({
         type: "LOAD_PRODUCTS",
         payload: {
           products: newarr,
         },
       });
+
+      setProducts(newarr);
     }
   }, [data, loading, dispatch]);
+
+
 
   const onadd = (index, value, amount) => {
     if (value !== "" && amount !== "") {
@@ -56,18 +72,35 @@ export default function Add({ provider, onsubmit }) {
           products: actual,
         },
       });
+
+      setProducts(actual)
     }
   };
+
+
+
+  // const onchange = (e) => {
+  //   const filter = state.products.filter((item) => {
+  //     const name = item.name.toUpperCase();
+  //     return name.indexOf(e.target.value.toUpperCase()) !== -1;
+  //   });
+  //   setProducts(filter);
+  // };
 
   return (
     <Wrapper>
       <Text>Adicionar produtos a nota</Text>
       <Button onClick={onsubmit}>Finalizar</Button>
+      <View>
+        <Option onclick={(e)=>dispatch({type:"ADDITIONAL", payload:{value:e, lock:!state.additional.lock}})} text="Adicional" lock={state.additional.lock}></Option>
+        {/* <Filter onChange={onchange}></Filter> */}
+        <Option onclick={(e)=>dispatch({type:"DISCOUNT", payload:{value:e, lock:!state.discount.lock}})} text="Desconto" lock={state.discount.lock}></Option>
+      </View>
 
-      {state.products &&
-        state.products.map((item, index) => (
-          <List key={item.id} item={item} index={index} onadd={onadd}></List>
-        ))}
+      {products.map((item, index) => (
+            <List key={index} item={item} index={index} onadd={onadd}></List>
+      ))}
+
     </Wrapper>
   );
 }
@@ -78,6 +111,14 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`;
+
+const View = styled.div`
+width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-around;
+  flex-wrap:wrap;
 `;
 
 const Text = styled.h1``;

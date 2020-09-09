@@ -3,9 +3,9 @@ import styled from "styled-components";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
-import Item from "../../atoms/DashboardMainItem";
-import Pagination from "../../molecules/Main/Pagination";
-import Context from "../../molecules/Main/DashboardContext";
+import Item from "../../../atoms/DashboardMainItem";
+import Pagination from "../../../molecules/Main/Pagination";
+import Context from "../../../molecules/Main/DashboardContext";
 
 const GETOPERATIONS = gql`
   {
@@ -39,16 +39,23 @@ function DashboardMain() {
   const { loading, data, refetch } = useQuery(GETOPERATIONS);
   const [currentPage, setCurrentpage] = useState(1);
   const [postsPerPage] = useState(10);
+  const [posts, setPosts] = useState([])
 
   useEffect(() => {
     refetch();
   }, [refetch]);
+  
+
+  useEffect(()=>{
+    if(!loading){
+     setPosts(data.getOperation.map((operation) => operation).reverse());
+    }
+  },[data, loading])
 
   if (loading) {
     return <h1>loading</h1>;
   }
 
-  const posts = data.getOperation.map((operation) => operation).reverse();
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;

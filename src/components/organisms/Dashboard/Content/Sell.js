@@ -3,26 +3,24 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { useHistory } from "react-router-dom";
 
-import { SelectClient, Add } from "../../molecules/Operations";
+import { SelectClient, Add } from "../../../molecules/Operations";
 
-const ADDPURCHASE = gql`
-  mutation addPurchase(
-    $productId: ID!
-    $clientId: ID!
-    $value: Float!
-    $amount: Float!
+const ADDSALENOTE = gql`
+  mutation addSaleNote(
+    $clientId:ID 
+    $additional: Float
+    $discount: Float
+    $operation: [OperationsInput]  
   ) {
-    addPurchase(
-      productId: $productId
+    addSaleNote(
       clientId: $clientId
-      value: $value
-      amount: $amount
+      additional: $additional
+      discount: $discount
+      operation: $operation
     ) {
-      operation {
-        id
-      }
+      total
     }
-  }
+  } 
 `;
 
 const reducer = (state, { type, payload }) => {
@@ -54,23 +52,23 @@ const Buy = () => {
 
   const provider = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
-  const [fetch] = useMutation(ADDPURCHASE);
+  const [fetch] = useMutation(ADDSALENOTE);
 
   const onsubmit = async () => {
     try {
-      await provider.state.products
+      const operation = provider.state.products
         .filter((item) => item.added === true)
-        .forEach(
-          async (item) =>
-            await fetch({
-              variables: {
-                productId: item.id,
-                clientId: state.client,
-                value: Number(item.value),
-                amount: Number(item.amount),
-              },
-            })
-        );
+        .map(item => ({productId:item.id,value:Number(item.value), amount:Number(item.amount)}))
+
+        
+      await fetch({
+        variables:{
+          clientId: state.client,
+          additional: 0,
+          discount: 0,
+          operation
+        }
+      })
 
       history.push("/");
     } catch (error) {
@@ -78,7 +76,7 @@ const Buy = () => {
     }
   };
   if (provider.state.screen === 1) {
-    return <SelectClient provider={provider} type="1"></SelectClient>;
+    return <SelectClient provider={provider} type="2"></SelectClient>;
   }
 
   if (provider.state.screen === 2) {

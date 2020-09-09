@@ -1,11 +1,11 @@
 import React, { useState, useMemo } from "react";
 import styled from "styled-components";
-import useProducts from "../../../hooks/useProducts";
-import useUpdateProduct from "../../../hooks/useUpdateProduct";
-import ProductsList from "../../molecules/Products/List";
+import useProducts from "../../../../hooks/useProducts";
+import useUpdateProduct from "../../../../hooks/useUpdateProduct";
+import ProductsList from "../../../molecules/Products/List";
 
-import Adder from "../../molecules/Products/Adder";
-import Update from "../../molecules/Products/Update";
+import Adder from "../../../molecules/Products/Adder";
+import Update from "../../../molecules/Products/Update";
 
 function DashboardProduct() {
   const [products, refresh, add, remove] = useProducts();

@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import Item from "../../atoms/DashboardItem";
 import { AiFillDashboard, AiOutlineLogout } from "react-icons/ai";
+import { GoNote } from "react-icons/go";
 import {
   FaCartPlus,
   FaBox,
@@ -11,6 +12,7 @@ import {
   FaMoneyBillWave,
 } from "react-icons/fa";
 import { GiSellCard } from "react-icons/gi";
+
 
 function DashboardNavs() {
   return (
@@ -32,6 +34,9 @@ function DashboardNavs() {
       </Item>
       <Item to="comprador" icon={<FaUserTag></FaUserTag>}>
         Compradores
+      </Item>
+      <Item to="notes" icon={<GoNote></GoNote>}>
+        Notas
       </Item>
       <Item to="cust" icon={<FaMoneyBillWave></FaMoneyBillWave>}>
         Funcionários
