@@ -6,8 +6,8 @@ import {
 } from "apollo-boost";
 
 const httpLink = new HttpLink({
-  uri: "https://gexus.com.br/graphql",
-  // uri: "http://localhost:5000/graphql",
+  // uri: "https://gexus.com.br/graphql",
+  uri: "http://localhost:5000/graphql",
 });
 
 const authLink = new ApolloLink((operation, forward) => {

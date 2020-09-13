@@ -13,7 +13,6 @@ export default class ComponentToPrint extends React.Component {
       total,
     } = this.props.note;
 
-    console.log(Operations);
     return (
       <Wrapper>
         <Value>
@@ -27,7 +26,7 @@ export default class ComponentToPrint extends React.Component {
           <Paragraph>Total</Paragraph>
         </Item>
         {Operations.map((item) => (
-          <Item>
+          <Item key={item.id}>
             <Paragraph>{item.Products.name}</Paragraph>
             <Paragraph>{item.amount} kg</Paragraph>
             <Paragraph>R$ {item.value}/kg</Paragraph>

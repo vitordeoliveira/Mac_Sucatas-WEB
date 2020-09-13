@@ -14,8 +14,8 @@ function List({ note }) {
     <Wrapper>
       <Value>{note.Companies.name}</Value>
       <Value>{note.Users.name}</Value>
-      <Value>R${note.discount}</Value>
       <Value>R${note.additional}</Value>
+      <Value>R${note.discount}</Value>
       <Value>{note.Clients.name}</Value>
       <Value>
         {note.type === "1" ? <Buy>Compra</Buy> : <Sell>Venda</Sell>}

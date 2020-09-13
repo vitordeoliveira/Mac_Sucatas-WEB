@@ -1,11 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { AiOutlineReload } from "react-icons/ai";
 
 function List({ products, dispatch, remove, refresh, provider }) {
+  const { loading, data } = products;
+  const [items, setItems] = useState([]);
+
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  useEffect(() => {
+    if (!loading && data && data.getProduct) {
+      const newarr = data.getProduct;
+      newarr.sort((a, b) => {
+        const a_name = a.name.toUpperCase();
+        const b_name = b.name.toUpperCase();
+        if (a_name < b_name) return -1;
+        if (a_name > b_name) return 1;
+        return 0;
+      });
+
+      setItems(newarr);
+    }
+  }, [loading, data]);
 
   return (
     <>
@@ -46,11 +64,10 @@ function List({ products, dispatch, remove, refresh, provider }) {
           <Option>Excluir</Option>
         </Header>
 
-        {products.loading ? (
+        {loading ? (
           <Loading>loading...</Loading>
         ) : (
-          products.data.getProduct &&
-          products.data.getProduct.map((item) => (
+          items.map((item) => (
             <Items key={item.id}>
               <ID>{item.id}</ID>
               <Name>{item.name}</Name>

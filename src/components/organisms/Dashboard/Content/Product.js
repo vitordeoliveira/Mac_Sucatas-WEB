@@ -27,7 +27,7 @@ function DashboardProduct() {
       {provider.adder ? (
         <Options>
           {!state.showUpdate ? (
-            <Adder add={add} provider={provider}></Adder>
+            <Adder products={products} add={add} provider={provider}></Adder>
           ) : (
             <Update
               state={state}

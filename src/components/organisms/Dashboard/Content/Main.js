@@ -39,23 +39,26 @@ function DashboardMain() {
   const { loading, data, refetch } = useQuery(GETOPERATIONS);
   const [currentPage, setCurrentpage] = useState(1);
   const [postsPerPage] = useState(10);
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState([]);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     refetch();
   }, [refetch]);
-  
 
-  useEffect(()=>{
-    if(!loading){
-     setPosts(data.getOperation.map((operation) => operation).reverse());
+  useEffect(() => {
+    if (!loading && data && data.getOperation) {
+      setPosts(data.getOperation.map((operation) => operation).reverse());
     }
-  },[data, loading])
+
+    if (!loading && data && data.getCompany) {
+      setBalance(data.getCompany[0].balance);
+    }
+  }, [data, loading]);
 
   if (loading) {
     return <h1>loading</h1>;
   }
-
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
@@ -68,17 +71,14 @@ function DashboardMain() {
       <Dashboard>
         <Text>DASHBOARD</Text>
         <Content>
-          <Context
-            text="Balanço Liquido"
-            value={data.getCompany[0].balance}
-          ></Context>
+          <Context text="Balanço Liquido" value={balance}></Context>
           <Context
             text="Balanço em estoque"
-            value={data.getStockBalance}
+            value={data && data.getStockBalance}
           ></Context>
           <Context
             text="Valor total"
-            value={data.getCompany[0].balance + data.getStockBalance}
+            value={balance + data.getStockBalance}
           ></Context>
         </Content>
       </Dashboard>

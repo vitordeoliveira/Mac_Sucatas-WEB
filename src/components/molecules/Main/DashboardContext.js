@@ -5,7 +5,7 @@ function DashboardContext({ text, value }) {
   return (
     <Wrapper>
       <Title>{text}</Title>
-      <Value value={value}>R${value},00</Value>
+      <Value value={value}>R${value.toFixed(2)}</Value>
     </Wrapper>
   );
 }

@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 // import Loading from "../atoms/Loading";
 
 import Button from "../../atoms/Button";
 
-function Adder({ add, provider }) {
+function Adder({ add, provider, products }) {
   const [name, setName] = useState("");
   const [stock, setStock] = useState("");
   const [balanceStock, setBalanceStock] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    setTimeout(() => {
+      setError("");
+    }, 5000);
+  }, [error]);
 
   const onclick = () => {
+    const exist = products.data.getProduct
+      .map((item) => item.name.toUpperCase())
+      .includes(name.toUpperCase());
+
+    if (name === "") return setError("Nome do produto não pode ser vazio");
+    if (exist) return setError("Produto já cadastrado");
+
     add(name, stock, balanceStock);
     setName("");
     setStock("");
@@ -30,6 +44,7 @@ function Adder({ add, provider }) {
           </Close>
         ) : null}
       </Title>
+      <Error>{error}</Error>
       <Wrapper>
         <Input
           onChange={(e) => setName(e.target.value)}
@@ -60,7 +75,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  margin: 70px 0;
+  margin: 50px 0;
 `;
 
 const Title = styled.h1`
@@ -97,6 +112,12 @@ const Close = styled.span`
     transform: rotate(45deg);
     display: block;
   }
+`;
+
+const Error = styled.p`
+  color: red;
+  text-align: center;
+  width: 100%;
 `;
 
 export default Adder;

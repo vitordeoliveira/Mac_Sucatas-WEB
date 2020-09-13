@@ -7,10 +7,10 @@ import { SelectClient, Add } from "../../../molecules/Operations";
 
 const ADDPURCHASENOTE = gql`
   mutation addPurchaseNote(
-    $clientId:ID 
+    $clientId: ID
     $additional: Float
     $discount: Float
-    $operation: [OperationsInput]  
+    $operation: [OperationsInput]
   ) {
     addPurchaseNote(
       clientId: $clientId
@@ -40,16 +40,16 @@ const reducer = (state, { type, payload }) => {
       return {
         ...state,
         additional: {
-          value:payload.value,
-          lock: payload.lock
+          value: payload.value,
+          lock: payload.lock,
         },
       };
     case "DISCOUNT":
       return {
         ...state,
         discount: {
-          value:payload.value,
-          lock: payload.lock
+          value: payload.value,
+          lock: payload.lock,
         },
       };
     default:
@@ -63,8 +63,8 @@ const Buy = () => {
   const [state, dispatch] = useReducer(reducer, {
     screen: 1,
     client: null,
-    additional:{value:0, lock:false},
-    discount:{value:0, lock:false},
+    additional: { value: 0, lock: false },
+    discount: { value: 0, lock: false },
     products: [{ name: null, value: "", amount: "", added: false }],
   });
 
@@ -76,16 +76,26 @@ const Buy = () => {
     try {
       const operation = provider.state.products
         .filter((item) => item.added === true)
-        .map(item => ({productId:item.id,value:Number(item.value), amount:Number(item.amount)}))
-        
+        .map((item) => {
+          const value = item.value.replace(",", ".");
+          const amount = item.amount.replace(",", ".");
+          console.log(value);
+          console.log(amount);
+          return {
+            productId: item.id,
+            value: Number(value),
+            amount: Number(amount),
+          };
+        });
+
       await fetch({
-        variables:{
-          clientId: state.client, 
+        variables: {
+          clientId: state.client,
           additional: Number(state.additional.value),
           discount: Number(state.discount.value),
-          operation
-        }
-      })
+          operation,
+        },
+      });
 
       history.push("/");
     } catch (error) {

@@ -56,7 +56,9 @@ function Notes() {
         <Title>Total</Title>
         <Title>Imprimir</Title>
       </Header>
-      {data.getNotes.map((item) => <List note={item}></List>).reverse()}
+      {data.getNotes
+        .map((item) => <List key={item.id} note={item}></List>)
+        .reverse()}
     </Wrapper>
   );
 }
