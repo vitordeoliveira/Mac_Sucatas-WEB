@@ -1,5 +1,5 @@
 import React from "react";
-import {Notes, Sell, Buy, Clients, Product, Main} from "./Content";
+import { Notes, Sell, Buy, Clients, Product, Main, Worker } from "./Content";
 import { useParams } from "react-router-dom";
 
 const Index = () => {
@@ -18,6 +18,8 @@ const Index = () => {
       return <Sell></Sell>;
     case "notes":
       return <Notes></Notes>;
+    case "funcionarios":
+      return <Worker></Worker>;
 
     default:
       return <Main></Main>;

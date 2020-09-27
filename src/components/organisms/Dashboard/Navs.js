@@ -13,7 +13,6 @@ import {
 } from "react-icons/fa";
 import { GiSellCard } from "react-icons/gi";
 
-
 function DashboardNavs() {
   return (
     <List>
@@ -38,7 +37,7 @@ function DashboardNavs() {
       <Item to="notes" icon={<GoNote></GoNote>}>
         Notas
       </Item>
-      <Item to="cust" icon={<FaMoneyBillWave></FaMoneyBillWave>}>
+      <Item to="funcionarios" icon={<FaMoneyBillWave></FaMoneyBillWave>}>
         Funcionários
       </Item>
       <Item logout icon={<AiOutlineLogout></AiOutlineLogout>}>
