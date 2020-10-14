@@ -7,10 +7,10 @@ import { SelectClient, Add } from "../../../molecules/Operations";
 
 const ADDSALENOTE = gql`
   mutation addSaleNote(
-    $clientId:ID 
+    $clientId: ID
     $additional: Float
     $discount: Float
-    $operation: [OperationsInput]  
+    $operation: [OperationsInput]
   ) {
     addSaleNote(
       clientId: $clientId
@@ -20,7 +20,7 @@ const ADDSALENOTE = gql`
     ) {
       total
     }
-  } 
+  }
 `;
 
 const reducer = (state, { type, payload }) => {
@@ -36,17 +36,35 @@ const reducer = (state, { type, payload }) => {
         ...state,
         products: payload.products,
       };
+    case "ADDITIONAL":
+      return {
+        ...state,
+        additional: {
+          value: payload.value,
+          lock: payload.lock,
+        },
+      };
+    case "DISCOUNT":
+      return {
+        ...state,
+        discount: {
+          value: payload.value,
+          lock: payload.lock,
+        },
+      };
     default:
       return false;
   }
 };
 
-const Buy = () => {
+const Sell = () => {
   const history = useHistory();
 
   const [state, dispatch] = useReducer(reducer, {
     screen: 1,
     client: null,
+    additional: { value: 0, lock: false },
+    discount: { value: 0, lock: false },
     products: [{ name: null, value: "", amount: "", added: false }],
   });
 
@@ -58,23 +76,31 @@ const Buy = () => {
     try {
       const operation = provider.state.products
         .filter((item) => item.added === true)
-        .map(item => ({productId:item.id,value:Number(item.value), amount:Number(item.amount)}))
+        .map((item) => {
+          const value = item.value.replace(",", ".");
+          const amount = item.amount.replace(",", ".");
+          return {
+            productId: item.id,
+            value: Number(value),
+            amount: Number(amount),
+          };
+        });
 
-        
       await fetch({
-        variables:{
+        variables: {
           clientId: state.client,
-          additional: 0,
-          discount: 0,
-          operation
-        }
-      })
+          additional: Number(state.additional.value),
+          discount: Number(state.discount.value),
+          operation,
+        },
+      });
 
       history.push("/");
     } catch (error) {
       console.log(error);
     }
   };
+
   if (provider.state.screen === 1) {
     return <SelectClient provider={provider} type="2"></SelectClient>;
   }
@@ -84,4 +110,4 @@ const Buy = () => {
   }
 };
 
-export default Buy;
+export default Sell;

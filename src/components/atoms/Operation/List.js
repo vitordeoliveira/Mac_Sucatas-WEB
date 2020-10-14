@@ -10,6 +10,7 @@ function OperationList({ item, index, onadd }) {
   return (
     <Wrapper>
       <Name>{item.name}</Name>
+      <Name>{item.stock}kg</Name>
       <Input
         disabled={item.added}
         prefix={"R$"}
@@ -50,6 +51,7 @@ const Wrapper = styled.div`
 
 const Name = styled.p`
   font-size: 1rem;
+  width: 5%;
 `;
 
 const Button = styled.div`

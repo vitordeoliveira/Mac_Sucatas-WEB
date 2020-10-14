@@ -12,14 +12,19 @@ const GETPRODUCTS = gql`
     getProduct {
       id
       name
+      stock
     }
   }
 `;
 
 export default function Add({ provider, onsubmit }) {
   const { state, dispatch } = provider;
-  const { loading, data } = useQuery(GETPRODUCTS);
+  const { loading, data, refetch } = useQuery(GETPRODUCTS);
   const [products, setProducts] = useState(state.products);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   useEffect(() => {
     if (!loading) {
@@ -28,6 +33,7 @@ export default function Add({ provider, onsubmit }) {
         return {
           id: item.id,
           name: item.name,
+          stock: item.stock,
           value: "",
           amount: "",
           added: false,
@@ -53,8 +59,6 @@ export default function Add({ provider, onsubmit }) {
     }
   }, [data, loading, dispatch]);
 
-
-
   const onadd = (index, value, amount) => {
     if (value !== "" && amount !== "") {
       const actual = state.products;
@@ -73,11 +77,9 @@ export default function Add({ provider, onsubmit }) {
         },
       });
 
-      setProducts(actual)
+      setProducts(actual);
     }
   };
-
-
 
   // const onchange = (e) => {
   //   const filter = state.products.filter((item) => {
@@ -92,15 +94,32 @@ export default function Add({ provider, onsubmit }) {
       <Text>Adicionar produtos a nota</Text>
       <Button onClick={onsubmit}>Finalizar</Button>
       <View>
-        <Option onclick={(e)=>dispatch({type:"ADDITIONAL", payload:{value:e, lock:!state.additional.lock}})} text="Adicional" lock={state.additional.lock}></Option>
+        <Option
+          onclick={(e) =>
+            dispatch({
+              type: "ADDITIONAL",
+              payload: { value: e, lock: !state.additional.lock },
+            })
+          }
+          text="Adicional"
+          lock={state.additional.lock}
+        ></Option>
         {/* <Filter onChange={onchange}></Filter> */}
-        <Option onclick={(e)=>dispatch({type:"DISCOUNT", payload:{value:e, lock:!state.discount.lock}})} text="Desconto" lock={state.discount.lock}></Option>
+        <Option
+          onclick={(e) =>
+            dispatch({
+              type: "DISCOUNT",
+              payload: { value: e, lock: !state.discount.lock },
+            })
+          }
+          text="Desconto"
+          lock={state.discount.lock}
+        ></Option>
       </View>
 
       {products.map((item, index) => (
-            <List key={index} item={item} index={index} onadd={onadd}></List>
+        <List key={index} item={item} index={index} onadd={onadd}></List>
       ))}
-
     </Wrapper>
   );
 }
@@ -114,11 +133,11 @@ const Wrapper = styled.div`
 `;
 
 const View = styled.div`
-width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:space-around;
-  flex-wrap:wrap;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
 `;
 
 const Text = styled.h1``;

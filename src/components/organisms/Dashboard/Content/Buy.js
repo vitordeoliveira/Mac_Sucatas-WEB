@@ -79,8 +79,6 @@ const Buy = () => {
         .map((item) => {
           const value = item.value.replace(",", ".");
           const amount = item.amount.replace(",", ".");
-          console.log(value);
-          console.log(amount);
           return {
             productId: item.id,
             value: Number(value),

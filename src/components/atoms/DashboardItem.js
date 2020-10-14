@@ -22,30 +22,29 @@ const Wrapper = styled.div`
   cursor: pointer;
   padding: 5px 0px 5px 25px;
   display: flex;
-  align-items: center;
+  align-items: end;
   height: 40px;
-  transition: all 0.7s;
-  margin: 10px 2px;
+  transition: all 0.2s;
+  margin: 10px 10px;
 
   :hover {
     box-shadow: 0 0 5px #fff;
-    font-size: 17px;
+    font-weight: bold;
   }
 `;
 
 const Icon = styled.div`
   color: white;
-  margin-right: 25px;
+  margin-right: 8px;
+  font-size: 17px;
 `;
 
 const Item = styled.li`  
   margin: 3px 0;
   color: white;
-  font-weight: bold;
   height: auto;
   user-select: none;
-
- 
+  font-size: 15px;
 }
 `;
 

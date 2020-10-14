@@ -8,7 +8,7 @@ const Wrapper = styled.div`
 `;
 
 const Navs = styled.div`
-  flex: 1.4;
+  flex: 1;
   background: rgba(50, 50, 50);
 
   @media screen and (max-width: 950px) {

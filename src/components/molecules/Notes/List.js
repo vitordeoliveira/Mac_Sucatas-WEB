@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useReactToPrint } from "react-to-print";
 import PrintPage from "./PrintPage";
 
-function List({ note }) {
+function List({ note, onUpdate }) {
   const componentRef = useRef();
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -21,8 +21,8 @@ function List({ note }) {
         {note.type === "1" ? <Buy>Compra</Buy> : <Sell>Venda</Sell>}
       </Value>
       <Value>R${note.total}</Value>
-      <Option onClick={handlePrint}>O</Option>
-
+      <Option onClick={() => onUpdate(note)}>O</Option>
+      <Option onClick={handlePrint}>P</Option>
       <Print>
         <PrintPage ref={componentRef} note={note} />
       </Print>
@@ -65,6 +65,7 @@ const Value = styled.p`
 `;
 
 const Option = styled(Value)`
+  width: 8%;
   height: 100%;
   cursor: pointer;
   display: flex;

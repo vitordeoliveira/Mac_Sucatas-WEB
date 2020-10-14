@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useReducer, useMemo } from "react";
 import styled from "styled-components";
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
 import List from "../../../molecules/Notes/List";
+import Update from "../../../molecules/Notes/Update";
 
 const GETNOTE = gql`
   {
@@ -19,6 +20,7 @@ const GETNOTE = gql`
         name
       }
       Clients {
+        id
         name
       }
       total
@@ -26,6 +28,7 @@ const GETNOTE = gql`
         value
         amount
         Products {
+          id
           name
         }
       }
@@ -33,8 +36,34 @@ const GETNOTE = gql`
   }
 `;
 
+const reducer = (state, { type, payload }) => {
+  switch (type) {
+    case "UPDATE_NOTE":
+      return {
+        ...state,
+        note: payload.note,
+        update: true,
+      };
+    case "BACK":
+      return {
+        ...state,
+        note: null,
+        update: false,
+      };
+    default:
+      return false;
+  }
+};
+
 function Notes() {
   const { loading, data, refetch } = useQuery(GETNOTE);
+
+  const [state, dispatch] = useReducer(reducer, {
+    note: null,
+    update: false,
+  });
+
+  const provider = useMemo(() => ({ state, dispatch }), [state, dispatch]);
 
   useEffect(() => {
     refetch();
@@ -42,6 +71,10 @@ function Notes() {
 
   if (loading) {
     return <h1>loading</h1>;
+  }
+
+  if (state.update) {
+    return <Update provider={provider}></Update>;
   }
 
   return (
@@ -54,10 +87,19 @@ function Notes() {
         <Title>Cliente</Title>
         <Title>Tipo</Title>
         <Title>Total</Title>
-        <Title>Imprimir</Title>
+        <Option>Editar</Option>
+        <Option>Print</Option>
       </Header>
       {data.getNotes
-        .map((item) => <List key={item.id} note={item}></List>)
+        .map((item) => (
+          <List
+            key={item.id}
+            note={item}
+            onUpdate={(note) => {
+              dispatch({ type: "UPDATE_NOTE", payload: { note: note } });
+            }}
+          ></List>
+        ))
         .reverse()}
     </Wrapper>
   );
@@ -92,6 +134,10 @@ const Title = styled.h3`
   @media (max-width: 465px) {
     font-size: 10px;
   }
+`;
+
+const Option = styled(Title)`
+  width: 8%;
 `;
 
 export default Notes;
