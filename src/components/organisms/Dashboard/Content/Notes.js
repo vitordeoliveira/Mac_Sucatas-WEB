@@ -74,7 +74,7 @@ function Notes() {
   }
 
   if (state.update) {
-    return <Update provider={provider}></Update>;
+    return <Update provider={provider} refetch={refetch}></Update>;
   }
 
   return (

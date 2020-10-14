@@ -32,21 +32,21 @@ const reducer = (state, { type, payload }) => {
     case "SET_DISCOUNT":
       return {
         ...state,
-        discount: payload.discount.toFixed(2),
+        discount: payload.discount,
       };
     case "SET_ADDITIONAL":
       return {
         ...state,
-        additional: payload.additional.toFixed(2),
+        additional: payload.additional,
       };
     case "SET_TOTAL":
       return {
         ...state,
-        total: payload.total.toFixed(2),
+        total: payload.total,
       };
     case "SET_OPERATION_VALUE": {
       const arr = state.operations;
-      arr[payload.index].value = payload.value.toFixed(2);
+      arr[payload.index].value = payload.value;
 
       let sum = 0;
       for (let i = 0; i < state.operations.length; i++) {
@@ -64,7 +64,7 @@ const reducer = (state, { type, payload }) => {
 
     case "SET_OPERATION_AMOUNT": {
       const arr = state.operations;
-      arr[payload.index].amount = payload.amount.toFixed(2);
+      arr[payload.index].amount = payload.amount;
 
       let sum = 0;
       for (let i = 0; i < state.operations.length; i++) {
@@ -84,7 +84,7 @@ const reducer = (state, { type, payload }) => {
   }
 };
 
-function Update({ provider }) {
+function Update({ provider, refetch }) {
   const { state, dispatch } = provider;
   const { note } = state;
   const [fetch] = useMutation(UPDATENOTE);
@@ -124,32 +124,25 @@ function Update({ provider }) {
 
   const onsubmit = async () => {
     const treat_operations = operations.map((item) => {
-      const value = item.value.replace(",", ".");
-      const amount = item.amount.replace(",", ".");
       return {
         productId: item.Products.id,
-        value: Number(value),
-        amount: Number(amount),
+        value: Number(item.value),
+        amount: Number(item.amount),
       };
     });
-    console.log(treat_operations);
 
-    // await fetch({
-    //   variables: {
-    //     noteId: note.id,
-    //     type: note.type,
-    //     clientId: note.Clients.id,
-    //     additional,
-    //     discount,
-    //     operation: [
-    //       {
-    //         productId: note.Operations.Products.id,
-    //         value: 1,
-    //         amount: 1,
-    //       },
-    //     ],
-    //   },
-    // });
+    await fetch({
+      variables: {
+        noteId: note.id,
+        type: note.type,
+        clientId: note.Clients.id,
+        additional: Number(additional),
+        discount: Number(discount),
+        operation: treat_operations,
+      },
+    });
+
+    refetch();
 
     dispatch({ type: "BACK" });
   };
@@ -181,7 +174,7 @@ function Update({ provider }) {
         onChange={(e) =>
           providerUpdate.dispatchUpdate({
             type: "SET_DISCOUNT",
-            payload: { discount: e.target.value },
+            payload: { discount: e.target.value.replace(",", ".") },
           })
         }
       ></Input>
@@ -191,7 +184,7 @@ function Update({ provider }) {
         onChange={(e) =>
           providerUpdate.dispatchUpdate({
             type: "SET_ADDITIONAL",
-            payload: { additional: e.target.value },
+            payload: { additional: e.target.value.replace(",", ".") },
           })
         }
       ></Input>

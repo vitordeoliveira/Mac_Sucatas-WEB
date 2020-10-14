@@ -12,7 +12,7 @@ function UpdateList({ item, index, dispatch }) {
         onChange={(e) => {
           dispatch({
             type: "SET_OPERATION_AMOUNT",
-            payload: { index: index, amount: e.target.value },
+            payload: { index: index, amount: e.target.value.replace(",", ".") },
           });
         }}
       ></Input>
@@ -23,7 +23,7 @@ function UpdateList({ item, index, dispatch }) {
         onChange={(e) => {
           dispatch({
             type: "SET_OPERATION_VALUE",
-            payload: { index: index, value: e.target.value },
+            payload: { index: index, value: e.target.value.replace(",", ".") },
           });
         }}
       ></Input>
